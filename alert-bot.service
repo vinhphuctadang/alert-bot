@@ -1,0 +1,9 @@
+[Unit]
+Description=Foo
+
+[Service]
+WorkingDirectory=/home/ubuntu/alert-bot
+ExecStart=python3 /home/ubuntu/alert-bot/alert.py
+
+[Install]
+WantedBy=multi-user.target

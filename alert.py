@@ -56,7 +56,7 @@ def alert_discord(message, retry_count=3):
     return _alert_discord(DISCORD_WEBHOOK, message, retry_count=retry_count)
 
 def job_injective_auction_comming():
-    ALERT_BEFORE = 60 * 24 * 10 * 60
+    ALERT_BEFORE = 15 * 60 # 15 minutes
     def current_round(auctions):
         round, auction = -1, None
         for a in auctions:
