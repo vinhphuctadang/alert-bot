@@ -14,8 +14,14 @@ import os
 import requests
 
 # wake up and check
-INTERVAL = 2 # seconds
+INTERVAL = 60 # seconds
 DISCORD_WEBHOOK = None
+
+COMMING_AUCTION_ALERT_TEMPLATE="""
+Injective Auction Alert
+Auction is going to end in next %d minutes.
+Link: https://hub.injective.network/auction
+"""
 
 # global vars
 already_alerted = {}
@@ -69,7 +75,7 @@ def job_injective_auction_comming():
     now = time.time()
     if now < end_time and end_time - now < ALERT_BEFORE:
         minutes = int((end_time - now) / 60)
-        alert_result = alert_discord("Injective Auction Alert\nAuction is going to end in next %d minutes.\nLink: https://hub.injective.network/auction" % minutes)
+        alert_result = alert_discord("" % minutes)
         if alert_result:
             already_alerted[coming_auction.round] = True
     else:
