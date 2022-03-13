@@ -12,6 +12,7 @@ import time
 from dotenv import load_dotenv
 import os
 import requests
+import json
 
 # wake up and check
 INTERVAL = 60 # seconds
@@ -40,7 +41,11 @@ def _alert_discord(webhook, message, retry_count=3):
             is_success = False
 
         txt = request_result.text
-        appLog.info("alerted=%s response=%s" % (message, txt))
+        obj_log = {
+            "alerted": message,
+            "response": txt,
+        }
+        appLog.info("%s" % json.dumps(obj_log))
         if is_success:
             return True
     appLog.error("alert to discord failed")
@@ -51,7 +56,7 @@ def alert_discord(message, retry_count=3):
     return _alert_discord(DISCORD_WEBHOOK, message, retry_count=retry_count)
 
 def job_injective_auction_comming():
-    ALERT_BEFORE = 15 * 60
+    ALERT_BEFORE = 60 * 24 * 10 * 60
     def current_round(auctions):
         round, auction = -1, None
         for a in auctions:
@@ -75,7 +80,7 @@ def job_injective_auction_comming():
     now = time.time()
     if now < end_time and end_time - now < ALERT_BEFORE:
         minutes = int((end_time - now) / 60)
-        alert_result = alert_discord("" % minutes)
+        alert_result = alert_discord(COMMING_AUCTION_ALERT_TEMPLATE % minutes)
         if alert_result:
             already_alerted[coming_auction.round] = True
     else:
