@@ -31,6 +31,7 @@ logging.basicConfig(level=logging.INFO)
 appLog = logging.getLogger("alert-bot")
 
 def _alert_discord(webhook, message, retry_count=3):
+    appLog.info("going to alert Discord")
     for _ in range(retry_count):
         request_result = requests.post(webhook, data={
             "content": message,
@@ -56,6 +57,7 @@ def alert_discord(message, retry_count=3):
     return _alert_discord(DISCORD_WEBHOOK, message, retry_count=retry_count)
 
 def job_injective_auction_comming():
+    appLog.info("job_injective_auction_comming to check for upcoming auction is running")
     ALERT_BEFORE = 15 * 60 # 15 minutes
     def current_round(auctions):
         round, auction = -1, None
@@ -70,8 +72,14 @@ def job_injective_auction_comming():
         auctions = client.get_auctions()
     except Exception as e:
         appLog.error("get auction failed: " + str(e))
+        alert_discord("get_auction ERROR: ```get auction failed: %s```" % str(e))
+        return
 
     coming_auction = current_round(auctions.auctions)
+    if coming_auction == None:
+        alert_discord("get_auction ERROR: ```coming auction is null```")
+        return
+
     end_time = coming_auction.end_timestamp / 1000
 
     if already_alerted.get(coming_auction.round, False):
