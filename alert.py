@@ -55,7 +55,6 @@ def _alert_discord(webhook, message, retry_count=3):
 
 def _alert_slack(webhook, message, retry_count=3):
     lastErr = ""
-
     appLog.info("going to alert Slack")
     for _ in range(retry_count):
         request_result = requests.post(webhook, json={
@@ -131,6 +130,7 @@ def job_injective_bayc_price():
     client = Client(network=network, insecure=True)
     orderbook = None
 
+    appLog.info("job_injective_bayc_price to check for BAYC/WETH orderbook")
     try:
         orderbook = client.get_derivative_orderbook(market_id=BAYC_MARKETID)
     except Exception as e:
