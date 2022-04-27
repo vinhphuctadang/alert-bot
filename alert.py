@@ -148,10 +148,10 @@ def job_injective_bayc_price():
         if minAskPrice == None or minAskPrice > price: 
             minAskPrice = price
     # check and alert
-    if maxBidPrice < MAX_BID_THRE:
+    if maxBidPrice != None and maxBidPrice < MAX_BID_THRE:
         alert_slack("Hey, BAYC/WETH PERP orderbook has maxBidPrice below %.1fWETH, i.e %d, check please" % (MAX_BID_THRE/(10**18), maxBidPrice))
     
-    if minAskPrice >= MIN_ASK_THRE:
+    if minAskPrice != None and minAskPrice >= MIN_ASK_THRE:
         alert_slack("Hey, BAYC/WETH PERP orderbook has minAskPrice above/equal %.1fWETH, i.e %d, check please" % (MIN_ASK_THRE/(10**18), minAskPrice))
 
 def init():
